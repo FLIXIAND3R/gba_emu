@@ -8,6 +8,9 @@
  
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+let speedMultiplier = 1;  // normal speed
+const TURBO_FACTOR = 4;   // how much faster "brrrr" is
+
 function GameBoyAdvanceEmulator() {
     this.settings = {
         "SKIPBoot":false,                   //Skip the BIOS boot screen.
@@ -99,8 +102,13 @@ GameBoyAdvanceEmulator.prototype.clearTimer = function () {
 GameBoyAdvanceEmulator.prototype.startTimer = function () {
     this.clearTimer();
     var parentObj = this;
-    this.timer = setInterval(function (){parentObj.timerCallback()}, this.settings.timerIntervalRate);
-}
+    this.timer = setInterval(function () {
+        // run multiple update ticks if turbo is on
+        for (let i = 0; i < speedMultiplier; i++) {
+            parentObj.timerCallback();
+        }
+    }, this.settings.timerIntervalRate);
+};
 GameBoyAdvanceEmulator.prototype.timerCallback = function () {
     //Check to see if web view is not hidden, if hidden don't run due to JS timers being inaccurate on page hide:
     if (!document.hidden && !document.msHidden && !document.mozHidden && !document.webkitHidden) {

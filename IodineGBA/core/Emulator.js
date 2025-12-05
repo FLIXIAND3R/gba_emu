@@ -101,10 +101,15 @@ GameBoyAdvanceEmulator.prototype.clearTimer = function () {
 GameBoyAdvanceEmulator.prototype.startTimer = function () {
     this.clearTimer();
     var parentObj = this;
+
+    // permanently double the game speed
+    const SPEED_MULTIPLIER = 2;
+
     this.timer = setInterval(function () {
-        // run two update ticks per interval → double speed
-        parentObj.timerCallback();
-        parentObj.timerCallback();
+        // run multiple update ticks per interval
+        for (let i = 0; i < SPEED_MULTIPLIER; i++) {
+            parentObj.timerCallback();
+        }
     }, this.settings.timerIntervalRate);
 };
 
